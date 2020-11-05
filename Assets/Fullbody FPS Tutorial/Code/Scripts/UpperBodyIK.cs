@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using RootMotion.FinalIK;
+using Cinemachine;
+
 public class UpperBodyIK : MonoBehaviour
 {
     #region Variables
@@ -22,10 +24,9 @@ public class UpperBodyIK : MonoBehaviour
     [Header("LookAt Settings")]
     [SerializeField]
     private Transform m_camera = default;
-    [SerializeField]
     private Transform m_headTarget = default;
-    [SerializeField]
     private Transform m_bodyTarget = default;
+    public Rigidbody HeadTargetRigidbody { get; private set; }
     [Range(-89, 0)]
     [SerializeField]
     private float _maxAngleUp = 65f;
@@ -65,7 +66,7 @@ public class UpperBodyIK : MonoBehaviour
     [SerializeField]
     private float m_adsTransitionTime = 1f;
     [SerializeField]
-    private Camera m_mainCamera = default;
+    private CinemachineVirtualCamera m_mainCamera = default;
     [SerializeField]
     private float m_hipsFov = 60f;
     [SerializeField]
@@ -94,8 +95,24 @@ public class UpperBodyIK : MonoBehaviour
     #endregion
 
     #region BuiltIn Methods
+
+    private void Awake() {
+        m_headTarget = new GameObject("Head IK Target").transform;
+        m_headTarget.position = new Vector3(0, 1.5f, 50);
+        m_headLookAtIK.solver.target = m_headTarget;
+        m_headTarget.gameObject.hideFlags = HideFlags.HideAndDontSave;
+        HeadTargetRigidbody = m_headTarget.gameObject.AddComponent<Rigidbody>();
+        HeadTargetRigidbody.useGravity = false;
+
+        m_bodyTarget = new GameObject("Body IK Target").transform;
+        m_bodyTarget.position = new Vector3(40, 1.5f, 50);
+        m_bodyLookAtIK.solver.target = m_bodyTarget;
+        m_bodyTarget.gameObject.hideFlags = HideFlags.HideAndDontSave;
+    }
+
     private void Start()
     {
+
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -156,7 +173,7 @@ public class UpperBodyIK : MonoBehaviour
 
         m_rightHandFollow = Vector3.Lerp(m_rightHandHips.position, m_rightHandADS.position, m_transitionADS);
         m_rightHandFollowRot = Quaternion.Lerp(m_rightHandHips.rotation, m_rightHandADS.rotation, m_transitionADS);
-        m_mainCamera.fieldOfView = Mathf.Lerp(m_hipsFov, m_adsFov, m_transitionADS);
+        m_mainCamera.m_Lens.FieldOfView = Mathf.Lerp(m_hipsFov, m_adsFov, m_transitionADS);
 
         m_rightHandFollow += m_camera.TransformVector(m_swayPos);
 

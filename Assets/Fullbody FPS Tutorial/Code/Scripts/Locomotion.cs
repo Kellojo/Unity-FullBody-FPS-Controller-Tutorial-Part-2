@@ -29,6 +29,11 @@ public class Locomotion : MonoBehaviour
     #endregion
 
     #region BuiltIn Methods
+
+    private void Start() {
+        m_headTargetRigidbody = GetComponent<UpperBodyIK>().HeadTargetRigidbody;
+    }
+
     private void FixedUpdate()
     {
         UpdateMovementInput();
