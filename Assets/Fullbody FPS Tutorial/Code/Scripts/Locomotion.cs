@@ -13,10 +13,19 @@ public class Locomotion : MonoBehaviour
     private Animator m_animator = default;
     [SerializeField]
     private float m_offsetFloorY = 0.4f;
-    [SerializeField]
-    private float m_movementSpeed = 3f;
-    [SerializeField]
-    private Rigidbody m_headTargetRigidbody = default;
+    [SerializeField] private float m_movementSpeed = 5f;
+    [SerializeField] private float m_sprintMovementSpeed = 7f;
+    private float MovementSpeed {
+        get {
+            return IsSprinting ? m_sprintMovementSpeed : m_movementSpeed;
+        }
+    }
+    private bool IsSprinting {
+        get {
+            return Input.GetKey(KeyCode.LeftShift);
+        }
+    }
+    [SerializeField] private Rigidbody m_headTargetRigidbody = default;
 
 
     private Vector3 m_movementDir;
@@ -66,7 +75,7 @@ public class Locomotion : MonoBehaviour
             m_gravity += (Vector3.up * Physics.gravity.y * Time.fixedDeltaTime);
         }
 
-        m_rb.velocity = (m_movementDir * m_movementSpeed * m_inputAmount) + m_gravity;
+        m_rb.velocity = (m_movementDir * MovementSpeed * m_inputAmount) + m_gravity;
         m_headTargetRigidbody.velocity = m_rb.velocity;
 
 
@@ -118,6 +127,7 @@ public class Locomotion : MonoBehaviour
     {
         m_animator.SetFloat("Forward", m_inputManager.Forward);
         m_animator.SetFloat("Sideway", m_inputManager.Sideway);
+        m_animator.SetBool("Is Sprinting", IsSprinting);
     }
     #endregion
 }

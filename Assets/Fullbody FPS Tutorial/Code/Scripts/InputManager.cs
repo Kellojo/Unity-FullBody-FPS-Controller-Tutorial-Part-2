@@ -15,8 +15,8 @@ public class InputManager : MonoBehaviour
     [Header("Camera Axis")]
     private string m_verticalLookAxis = "Mouse Y";
     private string m_horizontalLookAxis = "Mouse X";
-    private float m_xAxisSensitivity = 0.2f;
-    private float m_yAxisSensitivity = 0.2f;
+    [SerializeField] private float m_xAxisSensitivity = 100f;
+    [SerializeField] private float m_yAxisSensitivity = 100f;
 
     protected float m_forward;
     protected float m_sideway;
@@ -65,8 +65,8 @@ public class InputManager : MonoBehaviour
         m_forward = Input.GetAxis(m_forwardAxis);
         m_sideway = Input.GetAxis(m_sidewayAxis);
         m_aiming = Input.GetKey(m_aimKey);
-        m_xAxis = Input.GetAxis(m_horizontalLookAxis) * m_xAxisSensitivity;
-        m_yAxis = Input.GetAxis(m_verticalLookAxis) * m_yAxisSensitivity;
+        m_xAxis = Input.GetAxis(m_horizontalLookAxis) * m_xAxisSensitivity;// * Time.deltaTime;
+        m_yAxis = Input.GetAxis(m_verticalLookAxis) * m_yAxisSensitivity;// * Time.deltaTime;
     }
     #endregion
 }
